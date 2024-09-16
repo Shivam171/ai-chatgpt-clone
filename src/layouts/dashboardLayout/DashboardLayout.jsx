@@ -1,10 +1,11 @@
 import { Outlet, useNavigate } from 'react-router-dom';
-import './dashboardLayout.css';
 import { useAuth } from '@clerk/clerk-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import ChatList from '../../components/chatList/ChatList';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardLayout() {
-
+    const [isChatListVisible, setIsChatListVisible] = useState(true);
     const { userId, isLoaded } = useAuth();
     const navigate = useNavigate();
 
@@ -19,12 +20,22 @@ export default function DashboardLayout() {
     }
 
     return (
-        <div className="dashboardLayout">
-            <div className="menu">
-                MENU
-            </div>
-            <div className="content">
-                <Outlet />
+        <div className="flex gap-8 items-center h-full">
+            <AnimatePresence>
+                {isChatListVisible && (
+                    <motion.div
+                        key="chatList"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        className="h-full">
+                        <ChatList />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <div className="grow h-full">
+                <Outlet context={{ isChatListVisible, setIsChatListVisible }} />
             </div>
         </div>
     )

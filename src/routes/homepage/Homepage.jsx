@@ -1,8 +1,5 @@
-import { BsBoxArrowInRight } from "react-icons/bs";
 import { BsArrowRight } from "react-icons/bs";
-import { BiRightArrowAlt } from "react-icons/bi";
 import { Link } from "react-router-dom"
-
 
 export default function Homepage() {
     return (
