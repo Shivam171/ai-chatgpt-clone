@@ -20,27 +20,7 @@ export default function ChatList() {
                     <div className="flex flex-col overflow-y-auto">
                         <span className="mb-2 font-bold text-sm">RECENT CHATS</span>
                         <div className="flex flex-col gap-2 text-sm">
-                            <Link to='/'>
-                                <div className="hover:bg-gray-200 transition-all ease-linear p-2 rounded-lg">
-                                    Chat Title
-                                </div>
-                            </Link>
-                            <Link to='/'>
-                                <div className="hover:bg-gray-200 transition-all ease-linear p-2 rounded-lg">
-                                    Chat Title
-                                </div>
-                            </Link>
-                            <Link to='/'>
-                                <div className="hover:bg-gray-200 transition-all ease-linear p-2 rounded-lg">
-                                    Chat Title
-                                </div>
-                            </Link>
-                            <Link to='/'>
-                                <div className="hover:bg-gray-200 transition-all ease-linear p-2 rounded-lg">
-                                    Chat Title
-                                </div>
-                            </Link>
-                            <Link to='/'>
+                            <Link to='/dashboard/chats/123'>
                                 <div className="hover:bg-gray-200 transition-all ease-linear p-2 rounded-lg">
                                     Chat Title
                                 </div>

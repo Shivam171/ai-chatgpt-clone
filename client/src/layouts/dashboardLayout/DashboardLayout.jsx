@@ -5,7 +5,7 @@ import ChatList from '../../components/chatList/ChatList';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardLayout() {
-    const [isChatListVisible, setIsChatListVisible] = useState(true);
+    const [isChatListVisible, setIsChatListVisible] = useState(false);
     const { userId, isLoaded } = useAuth();
     const navigate = useNavigate();
 

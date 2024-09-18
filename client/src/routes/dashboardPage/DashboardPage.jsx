@@ -35,7 +35,7 @@ export default function DashboardPage() {
                 </div>
             </div>
             {/* Search and Buttons */}
-            <div className="flex items-center gap-1 bg-[#FAF7F9 w-full sm:w-[550px] relative">
+            <div className="flex items-center gap-1 w-full sm:w-[550px] relative">
                 {/* Buttons */}
                 <div className="flex gap-1">
                     <DropdownMenu>
