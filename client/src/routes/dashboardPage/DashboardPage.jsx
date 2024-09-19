@@ -1,31 +1,29 @@
 import { AiOutlineSearch } from "react-icons/ai";
-import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BsFillMicFill } from "react-icons/bs";
 import { FiPaperclip } from "react-icons/fi";
-import { FaPlaneDeparture } from "react-icons/fa";
-import { FaHandshake } from "react-icons/fa";
-import { FaPencilRuler } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useState } from "react";
 
 export default function DashboardPage() {
     const { isChatListVisible, setIsChatListVisible } = useOutletContext();
-    const [isOpen, setIsOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [toggleButtonVisibility, setToggleButtonVisibility] = useState(true);
+
     const toggleChatList = () => {
         setIsChatListVisible(!isChatListVisible);
     };
+
+    const toggleExtraButtonVisibility = () => {
+        setToggleButtonVisibility(!toggleButtonVisibility);
+    }
+
     return (
         <div className="flex flex-col pb-4 gap-4 items-center h-full">
-            {/* Response Area */}
-            {/* <div className="grow bg-[#FAF7F9] rounded-xl mx-4 p-3 w-full md:w-[600px] lg:w-[800px] xl:w-[1000px] mt-16 flex flex-col gap-4">
-                Hello World
-            </div> */}
-            {/* Initial Area */}
+            {/* Initial Area which is show when there is no conversation */}
             <div className="grow mt-16 flex flex-col items-center justify-center gap-4 select-none">
                 <img src="/logo.png" alt="SayGPT" className="w-14 h-14" />
                 <div className="flex flex-col items-center gap-2">
@@ -36,48 +34,37 @@ export default function DashboardPage() {
             </div>
             {/* Search and Buttons */}
             <div className="flex items-center gap-1 w-full sm:w-[550px] relative">
-                {/* Buttons */}
-                <div className="flex gap-1">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            {/* 3 Dots */}
-                            <Button
-                                className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-2 rounded-full transition-all ease-linear">
-                                <BiDotsVerticalRounded className="w-6 h-6" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className='ml-8 mb-2'>
-                            <DropdownMenuItem className="cursor-pointer" onSelect={(event) => {
-                                event.preventDefault();
-                            }}>
-                                <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button onClick={() => setIsOpen(true)}>
-                                            <BsFillMicFill className="w-4 h-4" />
-                                            <span className="ml-3">Voice Input</span>
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
-                                        <div className="flex flex-col items-center h-full justify-center gap-4">
-                                            <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
-                                                <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
-                                            </div>
-                                            <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
-                                            <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
-                                        </div>
-                                    </DialogContent>
-                                </Dialog>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={toggleChatList} className="cursor-pointer">
-                                <Button>
-                                    <BsLayoutSidebarInset className="w-4 h-4" />
-                                    <span className="ml-3">Toggle Layout</span>
+                {toggleButtonVisibility && (
+                    <>
+                        {/* Chat List Toggle */}
+                        <Button
+                            onClick={toggleChatList}
+                            className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear">
+                            <BsLayoutSidebarInset className="w-4 h-4" />
+                        </Button>
+                        {/* Microphone Button */}
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button
+                                    onClick={() => setIsDialogOpen(true)}
+                                    className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear"
+                                >
+                                    <BsFillMicFill className="w-4 h-4" />
                                 </Button>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-                {/* Text Area */}
+                            </DialogTrigger>
+                            <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
+                                <div className="flex flex-col items-center h-full justify-center gap-4">
+                                    <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
+                                        <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
+                                    </div>
+                                    <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
+                                    <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </>
+                )}
+                {/* Text Area, Attach file and Search Button */}
                 <div className="flex items-center w-full">
                     {/* Attach File */}
                     <TooltipProvider>
@@ -93,7 +80,7 @@ export default function DashboardPage() {
                         </Tooltip>
                     </TooltipProvider>
                     {/* Search */}
-                    <Button type="button" className="absolute hidden md:block translate-x-[415px] bg-[#eb9781] hover:bg-[#e8785d] text-white px-5 py-2 rounded-full transition-all ease-linear">
+                    <Button type="button" className={`${toggleExtraButtonVisibility ? "translate-x-[370px]" : "translate-y-[670px]"} absolute hidden md:block bg-[#eb9781] hover:bg-[#e8785d] text-white px-5 py-2 rounded-full transition-all ease-linear`}>
                         Search
                     </Button>
                     {/* Text Area */}
@@ -101,6 +88,8 @@ export default function DashboardPage() {
                         <textarea
                             type="textarea"
                             rows={1}
+                            onFocus={toggleExtraButtonVisibility}
+                            onBlur={() => setToggleButtonVisibility(true)}
                             placeholder="Search anything..."
                             className="shadow-sm focus:shadow-lg resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
                         />
