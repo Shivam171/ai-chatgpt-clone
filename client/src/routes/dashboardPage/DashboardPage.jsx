@@ -1,14 +1,20 @@
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsFillMicFill } from "react-icons/bs";
 import { FiPaperclip } from "react-icons/fi";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useState } from "react";
+import {
+    useMutation,
+    QueryClient,
+} from '@tanstack/react-query'
 
 export default function DashboardPage() {
+    const queryClient = new QueryClient()
+    const navigate = useNavigate();
     const { isChatListVisible, setIsChatListVisible } = useOutletContext();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [toggleButtonVisibility, setToggleButtonVisibility] = useState(true);
@@ -21,18 +27,29 @@ export default function DashboardPage() {
         setToggleButtonVisibility(!toggleButtonVisibility);
     }
 
+    const mutation = useMutation({
+        mutationFn: (text) => {
+            return fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            }).then((res) => res.json())
+        },
+        onSuccess: (id) => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ['userChats'] });
+            navigate(`/dashboard/chats/${id}`);
+        },
+    })
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const text = event.target.text.value;
         if (!text) return;
-        await fetch('http://localhost:3001/api/chats', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ text })
-        })
+        mutation.mutate(text);
     };
 
     return (

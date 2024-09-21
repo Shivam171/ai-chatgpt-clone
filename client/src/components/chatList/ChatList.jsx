@@ -19,11 +19,10 @@ const CloseableLink = ({ to, children, className, ...props }) => {
     );
 }
 
-
 export default function ChatList() {
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['chats'],
+        queryKey: ['userChats'],
         queryFn: () => {
             return fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, { credentials: 'include' }).then(res => res.json())
         }
@@ -42,7 +41,7 @@ export default function ChatList() {
                 Recent chats are listed below
             </SheetDescription>
             <div className="mt-2 grow flex flex-col gap-2 overflow-y-auto w-full">
-                {isPending ? <div className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Loading...</div> : error ? <div className="p-2 rounded-sm text-red-500 bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Error: {error.message}</div> : data?.map(chat => (
+                {isPending ? <div className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Loading...</div> : error ? <div className="p-2 rounded-sm text-red-500 bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Something went wrong!</div> : data?.map(chat => (
                     <CloseableLink key={chat._id} to={`/dashboard/chats/${chat._id}`} className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">{chat.title}</CloseableLink>
                 ))}
             </div>

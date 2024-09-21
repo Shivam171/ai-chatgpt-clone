@@ -8,11 +8,16 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Upload from "@/components/upload/Upload";
 import model from "@/lib/gemini";
+import {
+    useMutation,
+    QueryClient,
+} from '@tanstack/react-query'
 
-export default function NewPrompt({ question, setQuestion, answer, setAnswer, img, setImg }) {
+export default function NewPrompt({ data, question, setQuestion, answer, setAnswer, img, setImg }) {
     const { isChatListVisible, setIsChatListVisible } = useOutletContext();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [toggleButtonVisibility, setToggleButtonVisibility] = useState(true);
+    const queryClient = new QueryClient();
 
     const toggleChatList = () => {
         setIsChatListVisible(!isChatListVisible);
@@ -38,21 +43,53 @@ export default function NewPrompt({ question, setQuestion, answer, setAnswer, im
         }
     })
 
+
+    const mutation = useMutation({
+        mutationFn: () => {
+            return fetch(`${import.meta.env.VITE_API_URL}/api/chats/${data._id}`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: question.length ? question : undefined,
+                    answer,
+                    img: img.dbData?.filePath || undefined,
+                })
+            }).then((res) => res.json())
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({ queryKey: ['chat', data._id] }).then(() => {
+                setQuestion("");
+                setAnswer("");
+                setImg({
+                    isLoading: false,
+                    error: "",
+                    dbData: {},
+                    aiData: {},
+                });
+            });
+        },
+        onError: (err) => {
+            console.error("Error: ", err);
+        }
+    })
+
     const add = async (text) => {
         setQuestion(text);
-        const result = await chat.sendMessageStream(Object.entries(img.aiData).length ? [img.aiData, text] : text);
-        let accumulatedText = "";
-        for await (const chunk of result.stream) {
-            const chunkText = chunk.text();
-            accumulatedText += chunkText;
-            setAnswer(accumulatedText);
+        try {
+            const result = await chat.sendMessageStream(Object.entries(img.aiData).length ? [img.aiData, text] : text);
+            let accumulatedText = "";
+            for await (const chunk of result.stream) {
+                const chunkText = chunk.text();
+                accumulatedText += chunkText;
+                setAnswer(accumulatedText);
+            }
+            mutation.mutate();
+        } catch (err) {
+            console.error("Error: ", err);
         }
-        setImg({
-            isLoading: false,
-            error: "",
-            dbData: {},
-            aiData: {},
-        });
     }
 
     const handleSubmit = async (e) => {
