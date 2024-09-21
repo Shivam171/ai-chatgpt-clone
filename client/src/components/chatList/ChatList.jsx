@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sheet"
 import { Link } from "react-router-dom"
 import { ListPlus } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
 
 const CloseableLink = ({ to, children, className, ...props }) => {
     return (
@@ -18,7 +19,16 @@ const CloseableLink = ({ to, children, className, ...props }) => {
     );
 }
 
+
 export default function ChatList() {
+
+    const { isPending, error, data } = useQuery({
+        queryKey: ['chats'],
+        queryFn: () => {
+            return fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, { credentials: 'include' }).then(res => res.json())
+        }
+    })
+
     return (
         <div className="flex flex-col items-start h-full">
             <SheetHeader className="mb-2 w-full">
@@ -32,23 +42,9 @@ export default function ChatList() {
                 Recent chats are listed below
             </SheetDescription>
             <div className="mt-2 grow flex flex-col gap-2 overflow-y-auto w-full">
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp 1</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp 2</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp 3</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp4</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp5</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp6</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp7</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp8</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp9</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp10</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp11</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp12</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp13</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp14</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp15</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp16</CloseableLink>
-                <CloseableLink to='/dashboard/chats/123' className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Temp17</CloseableLink>
+                {isPending ? <div className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Loading...</div> : error ? <div className="p-2 rounded-sm text-red-500 bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">Error: {error.message}</div> : data?.map(chat => (
+                    <CloseableLink key={chat._id} to={`/dashboard/chats/${chat._id}`} className="p-2 rounded-sm bg-[#fff]/50 hover:bg-[#fff]/90 transition-all ease-linear w-[220px]">{chat.title}</CloseableLink>
+                ))}
             </div>
             <SheetFooter className="mt-2">
                 <img src="/logo.png" alt="SayGPT" className="w-10 h-10" />

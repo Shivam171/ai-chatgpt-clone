@@ -21,7 +21,7 @@ const authenticator = async () => {
     }
 }
 
-const Upload = ({ setImg, setMessages }) => {
+export default function Upload({ setImg }) {
     const fileInput = useRef(null);
     const onError = (err) => {
         console.log("Err:", err);
@@ -29,27 +29,12 @@ const Upload = ({ setImg, setMessages }) => {
 
     const onSuccess = (res) => {
         console.log("Success:", res);
-        setImg((prev) => ({
+        setImg(prev => ({
             ...prev,
             isLoading: false,
-            dbData: res,
-            aiData: {
-                ...prev.aiData,
-                filePath: res.filePath,
-            },
+            dbData: res
         }));
-
-        // Push the new message to messages state with the image
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-                role: "user",
-                content: "Image",
-                imageUrl: res.filePath, // set the image URL
-            },
-        ]);
-    };
-
+    }
 
     const onUploadProgress = (progress) => {
         console.log("Progress:", progress);
@@ -63,8 +48,10 @@ const Upload = ({ setImg, setMessages }) => {
                 ...prev,
                 isLoading: true,
                 aiData: {
-                    mimeType: file.type,
-                    data: reader.result.split(",")[1],
+                    inlineData: {
+                        mimeType: file.type,
+                        data: reader.result.split(",")[1],
+                    }
                 }
             }));
         }
@@ -95,5 +82,3 @@ const Upload = ({ setImg, setMessages }) => {
         </IKContext>
     )
 }
-
-export default Upload

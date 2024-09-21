@@ -21,6 +21,20 @@ export default function DashboardPage() {
         setToggleButtonVisibility(!toggleButtonVisibility);
     }
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const text = event.target.text.value;
+        if (!text) return;
+        await fetch('http://localhost:3001/api/chats', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text })
+        })
+    };
+
     return (
         <div className="flex flex-col pb-4 gap-4 items-center h-full">
             {/* Initial Area which is show when there is no conversation */}
@@ -34,80 +48,80 @@ export default function DashboardPage() {
             </div>
             {/* Search and Buttons */}
             <div className="flex items-center gap-1 w-full sm:w-[550px] relative">
-                {toggleButtonVisibility && (
-                    <>
-                        {/* Chat List Toggle */}
-                        <Button
-                            onClick={toggleChatList}
-                            className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear">
-                            <BsLayoutSidebarInset className="w-4 h-4" />
-                        </Button>
-                        {/* Microphone Button */}
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button
-                                    onClick={() => setIsDialogOpen(true)}
-                                    className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear"
-                                >
-                                    <BsFillMicFill className="w-4 h-4" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
-                                <div className="flex flex-col items-center h-full justify-center gap-4">
-                                    <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
-                                        <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
+                <form onSubmit={handleSubmit} className="w-full items-center flex gap-1">
+                    {toggleButtonVisibility && (
+                        <>
+                            {/* Chat List Toggle */}
+                            <Button
+                                type="button"
+                                onClick={toggleChatList}
+                                className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear">
+                                <BsLayoutSidebarInset className="w-4 h-4" />
+                            </Button>
+                            {/* Microphone Button */}
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        onClick={() => setIsDialogOpen(true)}
+                                        className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear"
+                                    >
+                                        <BsFillMicFill className="w-4 h-4" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
+                                    <div className="flex flex-col items-center h-full justify-center gap-4">
+                                        <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
+                                            <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
+                                        </div>
+                                        <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
+                                        <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                                     </div>
-                                    <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
-                                    <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
-                    </>
-                )}
-                {/* Text Area, Attach file and Search Button */}
-                <div className="flex items-center w-full">
-                    {/* Attach File */}
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button type="button" className="absolute translate-x-2 bg-[#ECEAEA] p-3 rounded-full transition-all ease-linear">
-                                    <FiPaperclip className="w-4 h-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Attach file</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    {/* Search */}
-                    <Button type="button" className={`${toggleExtraButtonVisibility ? "translate-x-[370px]" : "translate-y-[670px]"} absolute hidden md:block bg-[#eb9781] hover:bg-[#e8785d] text-white px-5 py-2 rounded-full transition-all ease-linear`}>
-                        Search
-                    </Button>
-                    {/* Text Area */}
-                    <form className="w-full items-center flex">
+                                </DialogContent>
+                            </Dialog>
+                        </>
+                    )}
+                    {/* Text Area, Attach file and Search Button */}
+                    <div className="flex items-center w-full">
+                        {/* Attach File */}
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button type="button" className="absolute translate-x-2 bg-[#ECEAEA] p-3 rounded-full transition-all ease-linear">
+                                        <FiPaperclip className="w-4 h-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Attach file</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        {/* Text Area */}
                         <textarea
                             type="textarea"
+                            name="text"
                             rows={1}
                             onFocus={toggleExtraButtonVisibility}
                             onBlur={() => setToggleButtonVisibility(true)}
                             placeholder="Search anything..."
                             className="shadow-sm focus:shadow-lg resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
                         />
-                    </form>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                {/* Search */}
-                                <Button type="submit" className="md:hidden ml-1 bg-[#eb9781] hover:bg-[#e8785d] text-white p-2 rounded-full transition-all ease-linear">
-                                    <AiOutlineSearch className="w-6 h-6" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Search</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
+                        {/* Search Button */}
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    {/* Search */}
+                                    <Button type="submit" className="ml-1 bg-[#eb9781] hover:bg-[#e8785d] text-white p-3 rounded-full transition-all ease-linear">
+                                        <AiOutlineSearch className="w-6 h-6" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Search</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+                </form>
             </div>
         </div>
     )
