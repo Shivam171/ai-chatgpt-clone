@@ -1,3 +1,4 @@
+import { BsGithub } from "react-icons/bs";
 import { Link, Outlet } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { SignedIn, UserButton } from "@clerk/clerk-react";
@@ -7,6 +8,7 @@ import {
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query'
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -45,20 +47,35 @@ export default function RootLayout() {
                                 <span className='text-2xl text-[#464646] font-medium'>SayGPT</span>
                             </div>
                         </div>
-                        {/* User */}
-                        <div>
-                            <SignedIn>
-                                <UserButton
-                                    appearance={{
-                                        elements: {
-                                            userButtonAvatarBox: {
-                                                width: '32px',
-                                                height: '32px',
+                        <div className="flex gap-4 items-center">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link to="https://github.com/shivam171" target="_blank">
+                                            <BsGithub className="w-7 h-7 pb-1 text-[#373737]" />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Check out my GitHub</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+
+                            {/* User */}
+                            <div>
+                                <SignedIn>
+                                    <UserButton
+                                        appearance={{
+                                            elements: {
+                                                userButtonAvatarBox: {
+                                                    width: '32px',
+                                                    height: '32px',
+                                                },
                                             },
-                                        },
-                                    }}
-                                />
-                            </SignedIn>
+                                        }}
+                                    />
+                                </SignedIn>
+                            </div>
                         </div>
                     </header>
                     {/* Main Content */}

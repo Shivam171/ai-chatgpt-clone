@@ -3,6 +3,7 @@ import { FaBrain, FaUserAlt } from "react-icons/fa";
 import { IKImage } from "imagekitio-react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import NewPrompt from "@/components/newPrompt/NewPrompt";
 // ----------- Syntax Highlighter for Markdown -----------
 import ReactMarkdown from 'react-markdown';
@@ -23,6 +24,7 @@ export default function ChatPage() {
     const endRef = useRef(null);
     const path = useLocation().pathname;
     const chatId = path.split("/").pop();
+    const { user } = useUser();
 
     const { isPending, error, data } = useQuery({
         queryKey: ['chat', chatId],
@@ -103,10 +105,18 @@ export default function ChatPage() {
                                     <div key={index} className="flex flex-col gap-2 w-full items-end">
                                         {/* header */}
                                         <div className="flex items-center gap-2">
-                                            <span className="font-semibold">User</span>
-                                            <div className="flex bg-[#464646] text-white rounded-full w-fit p-2">
-                                                <FaUserAlt className="w-4 h-4" />
-                                            </div>
+                                            <span className="font-semibold">{user?.fullName || "User"}</span>
+                                            {user?.imageUrl ? (
+                                                <img
+                                                    src={user.imageUrl}
+                                                    alt="User Avatar"
+                                                    className="w-8 h-8 rounded-full"
+                                                />
+                                            ) : (
+                                                <div className="flex bg-[#464646] text-white rounded-full w-fit p-2">
+                                                    <FaUserAlt className="w-4 h-4" />
+                                                </div>
+                                            )}
                                         </div>
                                         {/* User Query Image */}
                                         {message.img && (
@@ -159,10 +169,18 @@ export default function ChatPage() {
                     <div className="flex flex-col gap-2 w-full items-end">
                         {/* header */}
                         <div className="flex items-center gap-2">
-                            <span className="font-semibold">User</span>
-                            <div className="flex bg-[#464646] text-white rounded-full w-fit p-2">
-                                <FaUserAlt className="w-4 h-4" />
-                            </div>
+                            <span className="font-semibold">{user?.fullName || "User"}</span>
+                            {user?.imageUrl ? (
+                                <img
+                                    src={user.imageUrl}
+                                    alt="User Avatar"
+                                    className="w-8 h-8 rounded-full"
+                                />
+                            ) : (
+                                <div className="flex bg-[#464646] text-white rounded-full w-fit p-2">
+                                    <FaUserAlt className="w-4 h-4" />
+                                </div>
+                            )}
                         </div>
 
                         {/* Image Upload */}

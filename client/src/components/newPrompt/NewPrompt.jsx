@@ -95,7 +95,6 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
         }
     }
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const text = e.target.text.value;
@@ -123,33 +122,50 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
                 {toggleButtonVisibility && (
                     <>
                         {/* Chat List Toggle */}
-                        <Button
-                            type="button"
-                            onClick={toggleChatList}
-                            className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear">
-                            <BsLayoutSidebarInset className="w-4 h-4" />
-                        </Button>
-                        {/* Microphone Button */}
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button
-                                    type="button"
-                                    onClick={() => setIsDialogOpen(true)}
-                                    className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear"
-                                >
-                                    <BsFillMicFill className="w-4 h-4" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
-                                <div className="flex flex-col items-center h-full justify-center gap-4">
-                                    <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
-                                        <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
-                                    </div>
-                                    <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
-                                    <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        onClick={toggleChatList}
+                                        className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear">
+                                        <BsLayoutSidebarInset className="w-4 h-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Toggle Chat List</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Microphone Button */}
+                            <Tooltip>
+                                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                    <TooltipTrigger asChild>
+                                        <DialogTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                onClick={() => setIsDialogOpen(true)}
+                                                className="bg-[#454545] hover:bg-[#323232] border-none outline-none focus:ring-0 text-white shadow-md p-3 rounded-full transition-all ease-linear"
+                                            >
+                                                <BsFillMicFill className="w-4 h-4" />
+                                            </Button>
+                                        </DialogTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Use Audio</p>
+                                    </TooltipContent>
+                                    <DialogContent className="w-[400px] sm:max-w-[500px] h-[420px] rounded-xl grainy bg-[#FAF7F9]">
+                                        <div className="flex flex-col items-center h-full justify-center gap-4">
+                                            <div className="border-2 border-red-300 rounded-full p-3 text-red-400">
+                                                <BsFillMicFill className="w-10 h-10 animate-pulse duration-10" />
+                                            </div>
+                                            <p className="text-[16px]">Start by saying &quot;Hey SayGPT&quot;</p>
+                                            <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            </Tooltip>
+                        </TooltipProvider>
                     </>
                 )}
                 {/* Text Area, Attach file and Search Button */}

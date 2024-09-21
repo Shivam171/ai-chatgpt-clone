@@ -49,7 +49,7 @@ export default function ChatList() {
                 <img src="/logo.png" alt="SayGPT" className="w-10 h-10" />
                 <div className="flex flex-col">
                     <span className="font-bold text-sm">SayGPT Beta</span>
-                    <span className="text-[12px] text-nowrap">Limited access to all features</span>
+                    <span className="text-[12px] text-nowrap">Unlimited access to all features</span>
                 </div>
             </SheetFooter>
         </div>
