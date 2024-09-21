@@ -28,11 +28,11 @@ export default function ChatPage() {
         queryKey: ['chat', chatId],
         queryFn: () => {
             return fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chatId}`, { credentials: 'include' }).then(res => {
-                console.log(res);
+                // console.log(res);
                 return res.json()
             })
         },
-        refetchInterval: 3000,
+        refetchInterval: 1000,
     })
 
     useEffect(() => {
@@ -218,15 +218,17 @@ export default function ChatPage() {
                 <div ref={endRef} />
             </div>
             {/* Search and Buttons */}
-            <NewPrompt
-                data={data}
-                question={question}
-                setQuestion={setQuestion}
-                answer={answer}
-                setAnswer={setAnswer}
-                img={img}
-                setImg={setImg}
-            />
+            {data && (
+                <NewPrompt
+                    data={data}
+                    question={question}
+                    setQuestion={setQuestion}
+                    answer={answer}
+                    setAnswer={setAnswer}
+                    img={img}
+                    setImg={setImg}
+                />
+            )}
         </div>
     );
 }

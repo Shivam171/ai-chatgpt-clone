@@ -4,7 +4,7 @@ import { BsFillMicFill } from "react-icons/bs";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import Upload from "@/components/upload/Upload";
 import model from "@/lib/gemini";
@@ -18,6 +18,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [toggleButtonVisibility, setToggleButtonVisibility] = useState(true);
     const queryClient = new QueryClient();
+    const formRef = useRef(null);
 
     const toggleChatList = () => {
         setIsChatListVisible(!isChatListVisible);
@@ -61,6 +62,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
         },
         onSuccess: (id) => {
             queryClient.invalidateQueries({ queryKey: ['chat', data._id] }).then(() => {
+                formRef.current.reset();
                 setQuestion("");
                 setAnswer("");
                 setImg({
@@ -73,10 +75,11 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
         },
         onError: (err) => {
             console.error("Error: ", err);
+            setAnswer("Oops! Something went wrong. Please try again.");
         }
     })
 
-    const add = async (text) => {
+    const add = async (text, isInitial) => {
         setQuestion(text);
         try {
             const result = await chat.sendMessageStream(Object.entries(img.aiData).length ? [img.aiData, text] : text);
@@ -92,18 +95,31 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
         }
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const text = e.target.text.value;
         if (!text) return;
-        add(text);
+        add(text, false);
     }
+
+    // In production, we don't need it.
+    const hasRun = useRef(false);
+
+    useEffect(() => {
+        if (!hasRun.current) {
+            if (data?.history?.length === 1) {
+                add(data.history[0].parts[0].text, true);
+            }
+        }
+        hasRun.current = true;
+    }, []);
 
     return (
         <div className="flex flex-col pt-3 gap-2 w-full sm:w-[75%] relative">
 
             {/* Search and Buttons */}
-            <form onSubmit={handleSubmit} className="w-full items-center flex gap-1">
+            <form onSubmit={handleSubmit} ref={formRef} className="w-full items-center flex gap-1">
                 {toggleButtonVisibility && (
                     <>
                         {/* Chat List Toggle */}
@@ -157,7 +173,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
                         onFocus={toggleExtraButtonVisibility}
                         onBlur={() => setToggleButtonVisibility(true)}
                         placeholder="Search anything..."
-                        className="shadow-sm focus:shadow-lg resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
+                        className="shadow-sm resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
                     />
                     {/* Search Button */}
                     <TooltipProvider>
