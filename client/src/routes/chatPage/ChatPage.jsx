@@ -1,3 +1,6 @@
+import { GiSpeaker } from "react-icons/gi";
+import { AiOutlineClose } from 'react-icons/ai';
+import { BsFillClipboardFill } from "react-icons/bs";
 import { useRef, useEffect, useState } from "react";
 import { FaBrain, FaUserAlt } from "react-icons/fa";
 import { IKImage } from "imagekitio-react";
@@ -11,6 +14,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import toast from "react-hot-toast";
 
 export default function ChatPage() {
     const [question, setQuestion] = useState("");
@@ -21,6 +25,7 @@ export default function ChatPage() {
         dbData: {},
         aiData: {},
     });
+    const [speakingIndex, setSpeakingIndex] = useState(null);
     const endRef = useRef(null);
     const path = useLocation().pathname;
     const chatId = path.split("/").pop();
@@ -89,6 +94,49 @@ export default function ChatPage() {
         },
     };
 
+    // Function to copy AI response to clipboard
+    const handleCopyToClipboard = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                toast.success("Copied to clipboard!");
+            })
+            .catch((err) => {
+                console.error("Failed to copy: ", err);
+                toast.error("Failed to copy!");
+            });
+    };
+
+    // Function for Text-to-Speech
+    const handleTextToSpeech = (text, idx) => {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+
+            // Start speaking and set the active index
+            setSpeakingIndex(idx);
+
+            // When the speech ends, reset the state
+            utterance.onend = () => {
+                setSpeakingIndex(null);
+            };
+
+            // Handle canceling the speech if the close icon is clicked
+            utterance.onerror = () => {
+                setSpeakingIndex(null);
+            };
+        } else {
+            toast.error("Text-to-Speech not supported in this browser.");
+        }
+    };
+
+    // Function to cancel speech
+    const handleCancelSpeech = () => {
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            setSpeakingIndex(null);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center h-full">
             {/* Chat Box */}
@@ -150,7 +198,7 @@ export default function ChatPage() {
                                             <span className="font-semibold">Say GPT</span>
                                         </div>
                                         {/* content */}
-                                        <div className="rounded-xl max-w-[80%] bg-white p-4 text-sm">
+                                        <div className="rounded-xl max-w-[80%] bg-white p-4 text-sm flex flex-col gap-2">
                                             <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 rehypePlugins={[rehypeRaw]}
@@ -158,6 +206,28 @@ export default function ChatPage() {
                                             >
                                                 {message.parts[0].text}
                                             </ReactMarkdown>
+                                            {/* Copy to Clipboard and Text to Speech */}
+                                            <div className="flex gap-2 justify-end">
+                                                <div
+                                                    onClick={() => handleCopyToClipboard(message.parts[0].text)}
+                                                    className="cursor-pointer bg-[#464646] text-white rounded-full w-fit p-2">
+                                                    <BsFillClipboardFill className="w-4 h-4" />
+                                                </div>
+                                                <div
+                                                    className={`cursor-pointer ${speakingIndex === index ? 'bg-red-500' : 'bg-[#464646]'} text-white rounded-full w-fit p-1`}
+                                                    onClick={() =>
+                                                        speakingIndex === index
+                                                            ? handleCancelSpeech()
+                                                            : handleTextToSpeech(message.parts[0].text, index)
+                                                    }
+                                                >
+                                                    {speakingIndex === index ? (
+                                                        <AiOutlineClose className="w-6 h-6" />
+                                                    ) : (
+                                                        <GiSpeaker className="w-6 h-6" />
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )}

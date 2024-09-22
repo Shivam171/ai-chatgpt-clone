@@ -9,6 +9,7 @@ import {
     QueryClientProvider,
 } from '@tanstack/react-query'
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "react-hot-toast";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -37,6 +38,7 @@ export default function RootLayout() {
     return (
         <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
             <QueryClientProvider client={queryClient}>
+                <Toaster position="top-right" />
                 <div className="bg-gradient-to-r min-h-screen grainy from-[#e7e6ff] via-[#eee0e9] to-[#F6E3EE] flex flex-col">
                     {/* Sticky Header */}
                     <header className={`sticky top-0 z-20 py-4 px-8 flex justify-between items-center ${navBarClasses}`}>

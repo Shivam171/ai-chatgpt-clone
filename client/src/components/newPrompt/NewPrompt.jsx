@@ -189,7 +189,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
                         onFocus={toggleExtraButtonVisibility}
                         onBlur={() => setToggleButtonVisibility(true)}
                         placeholder="Search anything..."
-                        className="shadow-sm resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
+                        className="shadow-sm resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
                     />
                     {/* Search Button */}
                     <TooltipProvider>
