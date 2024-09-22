@@ -1,3 +1,5 @@
+![Say-GPT_Shivam171](https://github.com/user-attachments/assets/f2ac241c-8f04-4415-a541-1e9ca596b52f)
+
 # 🧠 AI-ChatGPT-Clone
 
 This project is a **simple GPT Chat** similar to OpenAI's ChatGPT and Google's Gemini. Users can ask questions, and the AI provides responses using the **Gemini API**. Additionally, users can upload images, and the AI will provide answers related to the image.
