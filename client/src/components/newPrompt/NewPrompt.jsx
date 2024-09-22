@@ -138,7 +138,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
                             </Tooltip>
 
                             {/* Microphone Button */}
-                            <Tooltip>
+                            {/* <Tooltip>
                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                     <TooltipTrigger asChild>
                                         <DialogTrigger asChild>
@@ -164,7 +164,7 @@ export default function NewPrompt({ data, question, setQuestion, answer, setAnsw
                                         </div>
                                     </DialogContent>
                                 </Dialog>
-                            </Tooltip>
+                            </Tooltip> */}
                         </TooltipProvider>
                     </>
                 )}

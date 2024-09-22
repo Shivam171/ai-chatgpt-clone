@@ -2,8 +2,6 @@ import { BsGithub } from "react-icons/bs";
 import { Link, Outlet } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { SignedIn, UserButton } from "@clerk/clerk-react";
-import { useState } from "react";
-import { useScroll, useMotionValueEvent } from "framer-motion";
 import {
     QueryClient,
     QueryClientProvider,
@@ -21,27 +19,13 @@ if (!PUBLISHABLE_KEY) {
 const queryClient = new QueryClient()
 
 export default function RootLayout() {
-    const { scrollY } = useScroll();
-    const [scrolled, setScrolled] = useState(false);
-
-    useMotionValueEvent(scrollY, "change", (latest) => {
-        if (latest > 0 && !scrolled) {
-            setScrolled(true);
-        } else if (latest === 0 && scrolled) {
-            setScrolled(false);
-        }
-    });
-
-    const defaultClasses = "transition-all absolute inset-0 -z-1";
-    let navBarClasses = scrolled ? `${defaultClasses} border-b border-black/10 bg-white/10 backdrop-blur-lg` : `${defaultClasses} bg-transparent`;
-
     return (
         <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
             <QueryClientProvider client={queryClient}>
                 <Toaster position="top-right" />
                 <div className="bg-gradient-to-r min-h-screen grainy from-[#e7e6ff] via-[#eee0e9] to-[#F6E3EE] flex flex-col">
                     {/* Sticky Header */}
-                    <header className={`sticky top-0 z-20 py-4 px-8 flex justify-between items-center ${navBarClasses}`}>
+                    <header className={`sticky top-0 z-20 py-4 px-8 flex justify-between items-center`}>
                         {/* Logo and Layout Toggle */}
                         <div className="select-none">
                             <div className='flex items-center font-bold gap-2'>
@@ -53,7 +37,7 @@ export default function RootLayout() {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Link to="https://github.com/shivam171" target="_blank">
+                                        <Link to="https://github.com/Shivam171/ai-chatgpt-clone" target="_blank">
                                             <BsGithub className="w-7 h-7 pb-1 text-[#373737]" />
                                         </Link>
                                     </TooltipTrigger>

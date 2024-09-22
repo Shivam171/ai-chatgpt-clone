@@ -76,7 +76,7 @@ export default function DashboardPage() {
                                 <BsLayoutSidebarInset className="w-4 h-4" />
                             </Button>
                             {/* Microphone Button */}
-                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button
                                         type="button"
@@ -95,24 +95,11 @@ export default function DashboardPage() {
                                         <p className="text-[14px] line-clamp-6">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
                                     </div>
                                 </DialogContent>
-                            </Dialog>
+                            </Dialog> */}
                         </>
                     )}
                     {/* Text Area, Attach file and Search Button */}
                     <div className="flex items-center w-full">
-                        {/* Attach File */}
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button type="button" className="absolute translate-x-2 bg-[#ECEAEA] p-3 rounded-full transition-all ease-linear">
-                                        <FiPaperclip className="w-4 h-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Attach file</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
                         {/* Text Area */}
                         <textarea
                             type="textarea"
@@ -121,7 +108,7 @@ export default function DashboardPage() {
                             onFocus={toggleExtraButtonVisibility}
                             onBlur={() => setToggleButtonVisibility(true)}
                             placeholder="Search anything..."
-                            className="shadow-sm focus:shadow-lg resize-none overflow-hidden transition-all ease-linear pl-14 pr-6 md:pr-[100px] py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
+                            className="shadow-sm focus:shadow-lg resize-none overflow-hidden transition-all ease-linear pl-6 pr-6 py-[0.8rem] rounded-full w-full bg-[#FAF7F9] outline-none border-none"
                         />
                         {/* Search Button */}
                         <TooltipProvider>
